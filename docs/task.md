@@ -3,47 +3,50 @@
 ## Phase 1: MVP Development (14 Days)
 
 ### Week 1: Core Infrastructure (Days 1-7)
-- [ ] Project setup and configuration
-  - [ ] Initialize Next.js 14 with App Router
-  - [ ] Set up Firebase project (Realtime Database, Firestore, Auth)
-  - [ ] Configure Tailwind CSS and shadcn/ui
-  - [ ] Set up Vercel project and environment variables
-  - [ ] Initialize Git repository and .gitignore
+- [x] Project setup and configuration
+  - [x] Initialize Next.js 14 with App Router
+  - [x] Set up Firebase project (Realtime Database, Firestore, Auth)
+  - [x] Configure Tailwind CSS and shadcn/ui
+  - [x] Set up Vercel project and environment variables
+  - [x] Initialize Git repository and .gitignore
 
-- [ ] Authentication system
-  - [ ] Implement Firebase Anonymous Auth
-  - [ ] Create user profile setup (nickname, gender, country)
-  - [ ] Build avatar generation with DiceBear API
-  - [ ] Implement session persistence with localStorage
+- [x] Authentication system
+  - [x] Implement Firebase Anonymous Auth
+  - [x] Create user profile setup (nickname, gender, country)
+  - [x] Build avatar generation with DiceBear API
+  - [x] Implement session persistence with localStorage
+  - [x] Modernize Profile Setup with Shadcn UI
 
-- [ ] Real-time chat foundation
-  - [ ] Design and implement Firebase Realtime Database structure
-  - [ ] Create room list component
-  - [ ] Build chat message interface
-  - [ ] Implement real-time message subscription
-  - [ ] Add message input with basic validation
+- [x] Real-time chat foundation
+  - [x] Design and implement Firebase Realtime Database structure
+  - [x] Create room list component
+  - [x] Build chat message interface
+  - [x] Implement real-time message subscription
+  - [x] Add message input with basic validation
+  - [x] Implement Emoji Picker
+  - [x] Implement Image Upload UI
 
-- [ ] Public chat rooms
-  - [ ] Create topic-based rooms
-  - [ ] Implement country-based rooms
-  - [ ] Add language-specific rooms
-  - [ ] Build age-group rooms
-  - [ ] Room capacity limits (200 users)
+- [x] Public chat rooms
+  - [x] Create topic-based rooms
+  - [x] Implement country-based rooms
+  - [x] Add language-specific rooms
+  - [x] Build age-group rooms
+  - [x] Room capacity limits (200 users)
 
 ### Week 2: Enhanced Features (Days 8-14)
 - [ ] Private messaging system
-  - [ ] Design private conversation structure
+  - [x] Design private conversation structure
   - [ ] Build PM request system (accept/decline)
-  - [ ] Create private chat interface
+  - [x] Create private chat interface
   - [ ] Implement notification badges
-  - [ ] Add multiple concurrent PM support
+  - [x] Add multiple concurrent PM support
 
-- [ ] User presence features
-  - [ ] Build online users list component
-  - [ ] Implement real-time status indicators
-  - [ ] Add typing indicators
-  - [ ] Create presence detection system
-  - [ ] Build user disconnect cleanup
+- [x] User presence features
+  - [x] Build online users list component
+  - [x] Implement real-time status indicators
+  - [x] Add typing indicators
+  - [x] Create presence detection system
+  - [x] Build user disconnect cleanup
 
 - [ ] Moderation and safety
   - [ ] Implement user blocking functionality
@@ -52,8 +55,8 @@
   - [ ] Build admin moderation panel (basic)
 
 - [ ] UI/UX polish
-  - [ ] Implement responsive design
-  - [ ] Add loading states
+  - [x] Implement responsive design
+  - [x] Add loading states
   - [ ] Create error boundaries
   - [ ] Build settings panel
   - [ ] Add favorite rooms feature

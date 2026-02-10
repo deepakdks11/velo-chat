@@ -33,7 +33,7 @@ A production-ready anonymous chat platform built with Next.js, Firebase, and AI-
 
 ### Project Initialization
 
-#### [NEW] [package.json](file:///c:/Users/Axel/velo-chat/package.json)
+### [DONE] [package.json](file:///c:/Users/Axel/velo-chat/package.json)
 
 Initialize Next.js 14 project with required dependencies:
 
@@ -59,7 +59,9 @@ Initialize Next.js 14 project with required dependencies:
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "tailwind-merge": "^2.2.1",
-    "lucide-react": "^0.323.0"
+    "lucide-react": "^0.323.0",
+    "emoji-picker-react": "^4.x",
+    "framer-motion": "^11.x"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -82,12 +84,14 @@ Initialize Next.js 14 project with required dependencies:
 - **DOMPurify**: XSS prevention via input sanitization
 - **DiceBear**: Avatar generation API
 - **shadcn/ui components**: Via manual installation (Tailwind dependencies included)
+- **[NEW] emoji-picker-react**: For emoji support
+- **[NEW] framer-motion**: For UI animations
 
 ---
 
 ### Core Infrastructure Setup
 
-#### [NEW] [firebase.config.ts](file:///c:/Users/Axel/velo-chat/src/lib/firebase.config.ts)
+#### [DONE] [firebase.config.ts](file:///c:/Users/Axel/velo-chat/src/lib/firebase.config.ts)
 
 Firebase initialization with environment variable configuration:
 
@@ -113,11 +117,11 @@ export const db = getDatabase(app);
 export const firestore = getFirestore(app);
 ```
 
-#### [NEW] [.env.local.example](file:///c:/Users/Axel/velo-chat/.env.local.example)
+#### [DONE] [.env.local.example](file:///c:/Users/Axel/velo-chat/.env.local.example)
 
 Environment variable template for Firebase and API keys.
 
-#### [NEW] [tailwind.config.ts](file:///c:/Users/Axel/velo-chat/tailwind.config.ts)
+#### [DONE] [tailwind.config.ts](file:///c:/Users/Axel/velo-chat/tailwind.config.ts)
 
 Tailwind CSS configuration optimized for shadcn/ui components.
 
@@ -125,7 +129,7 @@ Tailwind CSS configuration optimized for shadcn/ui components.
 
 ### Authentication System
 
-#### [NEW] [useAuth.ts](file:///c:/Users/Axel/velo-chat/src/hooks/useAuth.ts)
+#### [DONE] [useAuth.ts](file:///c:/Users/Axel/velo-chat/src/hooks/useAuth.ts)
 
 Custom hook for Firebase Anonymous Authentication with session persistence:
 
@@ -141,15 +145,16 @@ export function useAuth() {
 }
 ```
 
-#### [NEW] [ProfileSetup.tsx](file:///c:/Users/Axel/velo-chat/src/components/auth/ProfileSetup.tsx)
+#### [DONE] [ProfileSetup.tsx](file:///c:/Users/Axel/velo-chat/src/components/auth/ProfileSetup.tsx)
 
 User profile creation interface with nickname, gender, and country selection.
+**[UPDATE]**: Modernized with Shadcn UI (Card, Input, Select) and semantic theming.
 
 ---
 
 ### Real-Time Chat Foundation
 
-#### [NEW] [useChatRoom.ts](file:///c:/Users/Axel/velo-chat/src/hooks/useChatRoom.ts)
+#### [DONE] [useChatRoom.ts](file:///c:/Users/Axel/velo-chat/src/hooks/useChatRoom.ts)
 
 Real-time chat subscription and message handling:
 
@@ -159,12 +164,14 @@ export function useChatRoom(roomId: string) {
   // Send message functionality
   // Typing indicators
   // Online user presence
+  // [NEW] Support for image messages and different types
 }
 ```
 
-#### [NEW] [ChatRoom.tsx](file:///c:/Users/Axel/velo-chat/src/components/chat/ChatRoom.tsx)
+#### [DONE] [ChatRoom.tsx](file:///c:/Users/Axel/velo-chat/src/components/chat/ChatRoom.tsx)
 
 Main chat interface component with message list, input, and online users.
+**[UPDATE]**: Includes Emoji Picker, Image Rendering, and Private Messaging Routing.
 
 **Firebase Realtime Database Structure**:
 ```json
@@ -178,7 +185,8 @@ Main chat interface component with message list, input, and online users.
           "text": "string",
           "ts": "number",
           "country": "string",
-          "gender": "string"
+          "gender": "string",
+          "type": "text | image"
         }
       },
       "typing": { "{uid}": "timestamp" },
@@ -194,19 +202,21 @@ Main chat interface component with message list, input, and online users.
 }
 ```
 
-#### [NEW] [MessageInput.tsx](file:///c:/Users/Axel/velo-chat/src/components/chat/MessageInput.tsx)
+#### [DONE] [MessageInput.tsx](file:///c:/Users/Axel/velo-chat/src/components/chat/MessageInput.tsx)
 
 Message input component with:
 - DOMPurify sanitization
 - Character limit (500 chars)
 - Client-side rate limiting (1 msg/second)
 - Typing indicator emission
+- **[NEW] Emoji Picker integration**
+- **[NEW] Image Upload UI**
 
 ---
 
 ### Room Management
 
-#### [NEW] [RoomList.tsx](file:///c:/Users/Axel/velo-chat/src/components/rooms/RoomList.tsx)
+#### [DONE] [RoomList.tsx](file:///c:/Users/Axel/velo-chat/src/components/rooms/RoomList.tsx)
 
 Room directory with categorization:
 - Topic-based rooms (General, Tech, Gaming, Music, etc.)
@@ -214,7 +224,7 @@ Room directory with categorization:
 - Language-specific rooms (English, Spanish, etc.)
 - Age-group rooms (18-24, 25-34, 35+)
 
-#### [NEW] [RoomCard.tsx](file:///c:/Users/Axel/velo-chat/src/components/rooms/RoomCard.tsx)
+#### [DONE] [RoomCard.tsx](file:///c:/Users/Axel/velo-chat/src/components/rooms/RoomCard.tsx)
 
 Individual room display with active user count and capacity limit (200 max).
 
@@ -234,9 +244,10 @@ interface Room {
 
 ### Private Messaging System
 
-#### [NEW] [usePrivateMessage.ts](file:///c:/Users/Axel/velo-chat/src/hooks/usePrivateMessage.ts)
+#### [DONE] [usePrivateMessage.ts](file:///c:/Users/Axel/velo-chat/src/hooks/usePrivateMessage.ts)
 
 Private conversation management:
+**[NOTE]**: Currently implemented via `getPrivateChatId` utility and `ChatRoom` routing rather than a separate hook for MVP.
 
 ```typescript
 export function usePrivateMessage() {
@@ -267,19 +278,20 @@ export function usePrivateMessage() {
 }
 ```
 
-#### [NEW] [PrivateMessageList.tsx](file:///c:/Users/Axel/velo-chat/src/components/pm/PrivateMessageList.tsx)
+#### [PENDING] [PrivateMessageList.tsx](file:///c:/Users/Axel/velo-chat/src/components/pm/PrivateMessageList.tsx)
 
 List of active private conversations with unread badges.
 
-#### [NEW] [PrivateChat.tsx](file:///c:/Users/Axel/velo-chat/src/components/pm/PrivateChat.tsx)
+#### [DONE] [PrivateChat.tsx](file:///c:/Users/Axel/velo-chat/src/components/pm/PrivateChat.tsx)
 
 Private chat interface similar to public chat but with 1-on-1 messaging.
+**[NOTE]**: Integrated into `ChatRoom.tsx` via `pm_` prefix detection.
 
 ---
 
 ### User Presence & Typing Indicators
 
-#### [NEW] [OnlineUsersList.tsx](file:///c:/Users/Axel/velo-chat/src/components/chat/OnlineUsersList.tsx)
+#### [DONE] [OnlineUsersList.tsx](file:///c:/Users/Axel/velo-chat/src/components/chat/OnlineUsersList.tsx)
 
 Real-time online users display with:
 - User avatar (DiceBear)
@@ -287,7 +299,7 @@ Real-time online users display with:
 - Sorting options (newest, country, gender)
 - Click to initiate PM
 
-#### [NEW] [usePresence.ts](file:///c:/Users/Axel/velo-chat/src/hooks/usePresence.ts)
+#### [DONE] [usePresence.ts](file:///c:/Users/Axel/velo-chat/src/hooks/usePresence.ts)
 
 Presence detection using Firebase onDisconnect:
 
@@ -299,7 +311,7 @@ export function usePresence(roomId: string) {
 }
 ```
 
-#### [NEW] [TypingIndicator.tsx](file:///c:/Users/Axel/velo-chat/src/components/chat/TypingIndicator.tsx)
+#### [DONE] [TypingIndicator.tsx](file:///c:/Users/Axel/velo-chat/src/components/chat/TypingIndicator.tsx)
 
 Display "User is typing..." with debounced updates (500ms).
 
@@ -307,7 +319,7 @@ Display "User is typing..." with debounced updates (500ms).
 
 ### Moderation & Safety (Phase 1 - Basic)
 
-#### [NEW] [useModeration.ts](file:///c:/Users/Axel/velo-chat/src/hooks/useModeration.ts)
+#### [PENDING] [useModeration.ts](file:///c:/Users/Axel/velo-chat/src/hooks/useModeration.ts)
 
 Basic moderation functionality:
 
@@ -334,7 +346,7 @@ interface User {
 }
 ```
 
-#### [NEW] [profanityFilter.ts](file:///c:/Users/Axel/velo-chat/src/lib/profanityFilter.ts)
+#### [PENDING] [profanityFilter.ts](file:///c:/Users/Axel/velo-chat/src/lib/profanityFilter.ts)
 
 Client-side profanity detection (basic word list) with warning before send.
 
@@ -344,13 +356,19 @@ Client-side profanity detection (basic word list) with warning before send.
 
 Manual installation of shadcn/ui components:
 
-#### [NEW] [components/ui/button.tsx](file:///c:/Users/Axel/velo-chat/src/components/ui/button.tsx)
-#### [NEW] [components/ui/input.tsx](file:///c:/Users/Axel/velo-chat/src/components/ui/input.tsx)
-#### [NEW] [components/ui/avatar.tsx](file:///c:/Users/Axel/velo-chat/src/components/ui/avatar.tsx)
-#### [NEW] [components/ui/badge.tsx](file:///c:/Users/Axel/velo-chat/src/components/ui/badge.tsx)
-#### [NEW] [components/ui/dialog.tsx](file:///c:/Users/Axel/velo-chat/src/components/ui/dialog.tsx)
-#### [NEW] [components/ui/tabs.tsx](file:///c:/Users/Axel/velo-chat/src/components/ui/tabs.tsx)
-#### [NEW] [components/ui/toast.tsx](file:///c:/Users/Axel/velo-chat/src/components/ui/toast.tsx)
+#### [DONE] [components/ui/button.tsx](file:///c:/Users/Axel/velo-chat/src/components/ui/button.tsx)
+#### [DONE] [components/ui/input.tsx](file:///c:/Users/Axel/velo-chat/src/components/ui/input.tsx)
+#### [DONE] [components/ui/avatar.tsx](file:///c:/Users/Axel/velo-chat/src/components/ui/avatar.tsx)
+#### [DONE] [components/ui/badge.tsx](file:///c:/Users/Axel/velo-chat/src/components/ui/badge.tsx)
+#### [DONE] [components/ui/dialog.tsx](file:///c:/Users/Axel/velo-chat/src/components/ui/dialog.tsx)
+#### [DONE] [components/ui/tabs.tsx](file:///c:/Users/Axel/velo-chat/src/components/ui/tabs.tsx)
+#### [DONE] [components/ui/toast.tsx](file:///c:/Users/Axel/velo-chat/src/components/ui/toast.tsx)
+#### [DONE] [components/ui/scroll-area.tsx]
+#### [DONE] [components/ui/sheet.tsx]
+#### [DONE] [components/ui/tooltip.tsx]
+#### [DONE] [components/ui/card.tsx]
+#### [DONE] [components/ui/label.tsx]
+#### [DONE] [components/ui/select.tsx]
 
 Pre-built accessible components for rapid UI development.
 
@@ -358,7 +376,7 @@ Pre-built accessible components for rapid UI development.
 
 ### Page Structure
 
-#### [NEW] [app/layout.tsx](file:///c:/Users/Axel/velo-chat/src/app/layout.tsx)
+#### [DONE] [app/layout.tsx](file:///c:/Users/Axel/velo-chat/src/app/layout.tsx)
 
 Root layout with:
 - Font configuration (Inter from Google Fonts)
@@ -366,7 +384,7 @@ Root layout with:
 - Metadata for SEO
 - Analytics script (Phase 2)
 
-#### [NEW] [app/page.tsx](file:///c:/Users/Axel/velo-chat/src/app/page.tsx)
+#### [DONE] [app/page.tsx](file:///c:/Users/Axel/velo-chat/src/app/page.tsx)
 
 Landing page with:
 - Hero section promoting anonymous chat
@@ -374,11 +392,11 @@ Landing page with:
 - Room directory preview
 - CTA to "Start Chatting Now"
 
-#### [NEW] [app/chat/[roomId]/page.tsx](file:///c:/Users/Axel/velo-chat/src/app/chat/[roomId]/page.tsx)
+#### [DONE] [app/chat/[roomId]/page.tsx](file:///c:/Users/Axel/velo-chat/src/app/chat/[roomId]/page.tsx)
 
 Dynamic room page with chat interface.
 
-#### [NEW] [app/settings/page.tsx](file:///c:/Users/Axel/velo-chat/src/app/settings/page.tsx)
+#### [PENDING] [app/settings/page.tsx](file:///c:/Users/Axel/velo-chat/src/app/settings/page.tsx)
 
 User settings:
 - Change nickname/avatar
