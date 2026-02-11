@@ -23,21 +23,12 @@ export default function ChatPage({ params }: ChatPageProps) {
     }, [user, loading, router]);
 
     if (loading || !user) {
-        return (
-            <div className="flex min-h-screen items-center justify-center">
-                <Loading text="Authenticating..." />
-            </div>
-        );
+        return <Loading text="Authenticating..." className="h-screen" />;
     }
 
     return (
-        <div className="flex h-screen flex-col bg-background">
-            <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-6">
-                <h1 className="font-semibold text-lg">VeloChat</h1>
-            </header>
-            <main className="flex-1 overflow-hidden p-4">
-                <ChatRoom roomId={params.roomId} />
-            </main>
+        <div className="h-[calc(100vh-4rem)] bg-background">
+            <ChatRoom roomId={params.roomId} />
         </div>
     );
 }

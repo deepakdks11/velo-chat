@@ -2,48 +2,71 @@ import { useState, useEffect } from 'react';
 import { db, firestore } from '@/lib/firebase.config';
 import { ref, onValue } from 'firebase/database';
 import { useAuth } from './useAuth';
-import { doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import {
+    doc,
+    updateDoc,
+    arrayUnion,
+    arrayRemove,
+    collection,
+    onSnapshot,
+    getDocs,
+    writeBatch
+} from 'firebase/firestore';
+import { Room } from '@/types';
 
-export interface Room {
-    id: string;
-    name: string;
-    category: 'topic' | 'country' | 'language' | 'age';
-    activeUsers: number;
-    maxUsers: number;
-}
+const INITIAL_ROOMS: Room[] = [
+    { id: 'general', name: 'General Chat', category: 'topic', description: 'Talk about anything and everything.' },
+    { id: 'tech', name: 'Tech Talk', category: 'topic', description: 'Gadgets, coding, and future tech.' },
+    { id: 'gaming', name: 'Gaming', category: 'topic', description: 'LFG, strats, and game discussions.' },
+    { id: 'music', name: 'Music Lounge', category: 'topic', description: 'Share your favorite tunes and artists.' },
+    { id: 'movies', name: 'Movies & TV', category: 'topic', description: 'Discuss the latest blockbusters and series.' },
+    { id: 'crypto', name: 'Crypto & Finance', category: 'topic', description: 'To the moon! 🚀' },
+    { id: 'usa', name: 'USA', category: 'country', description: 'Chat with people from the United States.' },
+    { id: 'uk', name: 'United Kingdom', category: 'country', description: 'Cheers mate!' },
+    { id: 'india', name: 'India', category: 'country', description: 'Namaste! Connect with India.' },
+    { id: 'can', name: 'Canada', category: 'country', description: 'Eh? Friendly chat from the north.' },
+    { id: 'aus', name: 'Australia', category: 'country', description: 'G\'day! Down under chat.' },
+];
 
 export function useRooms() {
-    const { user, profile, updateProfile } = useAuth();
+    const { user, profile } = useAuth();
     const [rooms, setRooms] = useState<Room[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // In a real app with dynamic rooms, we'd listen to a 'rooms' path.
-        // For MVP, we might have static rooms or a simple list.
-        // Let's assume we fetch room stats from Realtime DB if they exist, 
-        // or just mock/define them here if we haven't built dynamic room creation yet.
+        const roomsCollection = collection(firestore, 'rooms');
 
-        // Based on previous plan, we have predefined categories. 
-        // Let's mock the room structure for now but enable "activeUsers" updates if we had them.
+        // Check if we need to seed
+        const checkAndSeed = async () => {
+            try {
+                const snapshot = await getDocs(roomsCollection);
+                if (snapshot.empty) {
+                    console.log("Seeding initial rooms...");
+                    const batch = writeBatch(firestore);
+                    INITIAL_ROOMS.forEach(room => {
+                        const roomRef = doc(roomsCollection, room.id);
+                        batch.set(roomRef, room);
+                    });
+                    await batch.commit();
+                    console.log("Seeding complete.");
+                }
+            } catch (error) {
+                console.error("Error seeding rooms:", error);
+            }
+        };
 
-        const staticRooms: Room[] = [
-            { id: 'general', name: 'General Chat', category: 'topic', activeUsers: 0, maxUsers: 200 },
-            { id: 'tech', name: 'Tech Talk', category: 'topic', activeUsers: 0, maxUsers: 200 },
-            { id: 'gaming', name: 'Gaming', category: 'topic', activeUsers: 0, maxUsers: 200 },
-            { id: 'music', name: 'Music Lounge', category: 'topic', activeUsers: 0, maxUsers: 200 },
-            { id: 'movies', name: 'Movie Buffs', category: 'topic', activeUsers: 0, maxUsers: 200 },
-            { id: 'usa', name: 'USA', category: 'country', activeUsers: 0, maxUsers: 200 },
-            { id: 'uk', name: 'United Kingdom', category: 'country', activeUsers: 0, maxUsers: 200 },
-            { id: 'india', name: 'India', category: 'country', activeUsers: 0, maxUsers: 200 },
-            { id: 'english', name: 'English', category: 'language', activeUsers: 0, maxUsers: 200 },
-            { id: 'spanish', name: 'Español', category: 'language', activeUsers: 0, maxUsers: 200 },
-            { id: '18-24', name: '18-24', category: 'age', activeUsers: 0, maxUsers: 200 },
-            { id: '25-34', name: '25-34', category: 'age', activeUsers: 0, maxUsers: 200 },
-            { id: '35plus', name: '35+', category: 'age', activeUsers: 0, maxUsers: 200 },
-        ];
+        checkAndSeed();
 
-        setRooms(staticRooms);
-        setLoading(false);
+        const unsubscribe = onSnapshot(roomsCollection, (snapshot) => {
+            const roomList = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            })) as Room[];
+            setRooms(roomList);
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
     }, []);
 
     const toggleFavorite = async (roomId: string) => {
@@ -57,7 +80,6 @@ export function useRooms() {
                 await updateDoc(userRef, {
                     favorites: arrayRemove(roomId)
                 });
-                // Optimistic update handled by useAuth listener
             } else {
                 await updateDoc(userRef, {
                     favorites: arrayUnion(roomId)

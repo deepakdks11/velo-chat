@@ -32,10 +32,11 @@ export interface Room {
     id: string;
     name: string;
     category: 'topic' | 'country' | 'language' | 'age';
-    activeUsers: number;
-    maxUsers: number;
+    activeUsers?: number;
+    maxUsers?: number;
+    description?: string;
     createdBy?: string;
-    createdAt: number;
+    createdAt?: number;
 }
 
 export interface PrivateChat {

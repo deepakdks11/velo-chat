@@ -12,32 +12,14 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription, SheetH
 import { usePrivateMessage } from '@/hooks/usePrivateMessage';
 import { useAuth } from '@/hooks/useAuth';
 import { useRooms } from '@/hooks/useRooms';
-
-// Mock data for MVP
-const TOPIC_ROOMS = [
-    { id: 'general', name: 'General Chat', category: 'topic', activeUsers: 42, maxUsers: 200, description: 'Talk about anything and everything.' },
-    { id: 'tech', name: 'Tech Talk', category: 'topic', activeUsers: 15, maxUsers: 200, description: 'Gadgets, coding, and future tech.' },
-    { id: 'gaming', name: 'Gaming', category: 'topic', activeUsers: 28, maxUsers: 200, description: 'LFG, strats, and game discussions.' },
-    { id: 'music', name: 'Music Lounge', category: 'topic', activeUsers: 8, maxUsers: 200, description: 'Share your favorite tunes and artists.' },
-    { id: 'movies', name: 'Movies & TV', category: 'topic', activeUsers: 12, maxUsers: 200, description: 'Discuss the latest blockbusters and series.' },
-    { id: 'crypto', name: 'Crypto & Finance', category: 'topic', activeUsers: 45, maxUsers: 200, description: 'To the moon! 🚀' },
-];
-
-const COUNTRY_ROOMS = [
-    { id: 'usa', name: 'USA', category: 'country', activeUsers: 120, maxUsers: 200, description: 'Chat with people from the United States.' },
-    { id: 'uk', name: 'United Kingdom', category: 'country', activeUsers: 55, maxUsers: 200, description: 'Cheers mate!' },
-    { id: 'india', name: 'India', category: 'country', activeUsers: 89, maxUsers: 200, description: 'Namaste! Connect with India.' },
-    { id: 'can', name: 'Canada', category: 'country', activeUsers: 22, maxUsers: 200, description: 'Eh? Friendly chat from the north.' },
-    { id: 'aus', name: 'Australia', category: 'country', activeUsers: 34, maxUsers: 200, description: 'G\'day! Down under chat.' },
-];
-
-const ALL_ROOMS = [...TOPIC_ROOMS, ...COUNTRY_ROOMS];
+import RoomActiveUsersBadge from './RoomActiveUsersBadge';
+import Loading from '@/components/ui/loading';
 
 export default function RoomList() {
     const router = useRouter();
     const { user } = useAuth();
     const { pendingRequestsCount, unreadMessagesCount } = usePrivateMessage();
-    const { toggleFavorite, isFavorite } = useRooms();
+    const { rooms, loading, toggleFavorite, isFavorite } = useRooms();
     const totalNotifications = pendingRequestsCount + unreadMessagesCount;
 
     const [selectedCategory, setSelectedCategory] = useState<'all' | 'topic' | 'country' | 'favorites'>('all');
@@ -52,13 +34,17 @@ export default function RoomList() {
         toggleFavorite(roomId);
     };
 
-    const filteredRooms = ALL_ROOMS.filter(room => {
+    const filteredRooms = rooms.filter(room => {
         const matchesCategory = selectedCategory === 'all' ||
             (selectedCategory === 'favorites' ? isFavorite(room.id) : room.category === selectedCategory);
         const matchesSearch = room.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            room.description.toLowerCase().includes(searchQuery.toLowerCase());
+            (room.description?.toLowerCase() || '').includes(searchQuery.toLowerCase());
         return matchesCategory && matchesSearch;
     });
+
+    if (loading) {
+        return <Loading text="Loading rooms..." className="h-[calc(100vh-4rem)]" />;
+    }
 
     return (
         <div className="flex h-[calc(100vh-4rem)] max-w-7xl mx-auto pt-4 gap-4 px-4">
@@ -212,10 +198,7 @@ export default function RoomList() {
                                                 >
                                                     <Star className={`h-4 w-4 ${favorited ? 'fill-current' : ''}`} />
                                                 </Button>
-                                                <span className="flex items-center text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-pulse"></span>
-                                                    {room.activeUsers}
-                                                </span>
+                                                <RoomActiveUsersBadge roomId={room.id} />
                                             </div>
                                         </div>
                                         <CardTitle className="text-lg group-hover:text-primary transition-colors">{room.name}</CardTitle>
